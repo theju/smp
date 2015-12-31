@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% load socialaccount %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+<h2>Login | <a href="{% url "account_signup" %}">Signup</a></h2>
+<div>
+  <p>
+    <a href="{% provider_login_url "facebook" method="oauth2" process="login" %}"><i class="fa fa-facebook-square"></i></a>
+    <a href="{% provider_login_url "twitter" process="login" %}"><i class="fa fa-twitter-square"></i></a>
+  </p>
+</div>
+<h3>OR</h3>
+<form method="post" action="{% url "account_login" %}" class="pure-form pure-form-stacked">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="Login" class="pure-button pure-button-primary" >
+  <p><a href="{% url "password_reset" %}">Forgot Username / Password?</a></p>
+</form>
+{% endblock %}

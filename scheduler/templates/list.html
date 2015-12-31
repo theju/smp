@@ -1,0 +1,61 @@
+{% extends "base.html" %}{% load socialaccount i18n %}
+
+{% block title %}
+{% trans "List of scheduled posts" %}
+{% endblock %}
+
+{% block content %}
+<div>
+  <p>
+    <a href="{% provider_login_url "facebook" method="oauth2" process="connect" %}"><i class="fa fa-facebook-square"></i></a>
+    <a href="{% provider_login_url "twitter" process="connect" %}"><i class="fa fa-twitter-square"></i></a>
+  </p>
+</div>
+<p><a href="{% url "scheduled_posts_add" %}">{% trans "Schedule a post" %}</a> | <a href="javascript:void(0);" class="api_key">{% trans "View API Key" %}</a></p>
+<p class="hidden api_key_holder"><strong>API Key:</strong> {{ api_keys.all.0.token }}</p>
+<table>
+  {% for post in posts %}
+  {% if forloop.first %}
+  <tr>
+    <th>{% trans "Status" %}</th>
+    <th>{% trans "Service" %}</th>
+    <th>{% trans "Scheduled Time" %}</th>
+    <th>{% trans "Action" %}</th>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ post.status }}</td>
+    <td>{{ post.service|capfirst }}</td>
+    <td>{{ post.scheduled_datetime }}</td>
+    <td>
+    <a href="{% url "scheduled_posts_edit" id=post.id %}">{% trans "Edit" %}</a>
+      |
+    <a href="javascript:deletePost('{% url "scheduled_posts_delete" id=post.id %}');">{% trans "Delete" %}</a>
+    </td>
+  </tr>
+    {% empty %}{% url scheduled_posts_add as scheduled_posts_add_url %}
+    <tr><td colspan="4">{% blocktrans with add_url=scheduled_posts_add_url %}No scheduled posts in the queue. Please click <a href="{{ add_url }}">here</a> to add one.{% endblocktrans %}</td></tr>
+  {% endfor %}
+</table>
+
+<script type="text/javascript">
+    function deletePost(url) {
+	if (confirm("{% trans "Are you sure you want to delete the post?" %}")) {
+	    window.location = url;
+	}
+    }
+    (function() {
+	var apiKeyLink = document.querySelector(".api_key");
+	apiKeyLink.addEventListener("click", function() {
+	    var apiKeyHolder = document.querySelector(".api_key_holder");
+	    if (apiKeyHolder.className.search(/hidden/) >= 0) {
+		apiKeyHolder.className = "api_key_holder";
+		apiKeyLink.innerHTML = "{% trans "Hide API Key" %}";
+	    } else {
+		apiKeyHolder.className = "hidden api_key_holder";
+		apiKeyLink.innerHTML = "{% trans "View API Key" %}";
+	    }
+	});
+    })();
+</script>
+{% endblock %}

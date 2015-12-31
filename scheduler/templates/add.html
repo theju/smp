@@ -1,0 +1,10 @@
+{% extends "base.html" %}{% load i18n %}
+
+{% block content %}
+<p><a href="{% url "scheduled_posts_list" %}">{% trans "View scheduled posts" %}</a></p>
+<form method="post" action="." class="pure-form pure-form-stacked">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="submit" value="{% trans "Schedule" %}" class="pure-button pure-button-primary" >
+</form>
+{% endblock %}

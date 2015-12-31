@@ -1,0 +1,29 @@
+<!doctype html>{% load static tz %}
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% get_static_prefix %}css/styles.css" type="text/css" media="screen" />
+  </head>
+  <body>
+    <div class="pure-g">
+      <div class="pure-u-1-5"></div>
+      <div class="pure-u-3-5">
+	<div class="connect">
+	  {% if request.user.is_authenticated %}
+	  <p>
+	    <a href="/">Home</a> | 
+	    <a href="{% url "account_logout" %}">Logout</a>
+	  </p>
+	{% endif %}
+	  <p><strong>{% localtime on %}{{ current_time }} {% get_current_timezone as tz %}{{ tz }}{% endlocaltime %}</strong></p>
+	</div>
+	{% block content %}
+	{% endblock %}
+      </div>
+      <div class="pure-u-1-5"></div>
+    </div>
+  </body>
+</html>
