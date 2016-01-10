@@ -1,0 +1,20 @@
+.connect {
+    float: right;
+}
+.connect i {
+    font-size: 1.5em;
+}
+table {
+    width: 100%;
+}
+th {
+    font-weight: bold;
+    text-align: left;
+}
+td {
+    padding: 10px 0;
+}
+tr:nth-child(even) {
+    background-color: #ccc;
+    padding: 10px;
+}
