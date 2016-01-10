@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import uuid
 
 from django.db import models
@@ -21,6 +23,9 @@ class ScheduledPost(models.Model):
             self.user.username, self.status[:10],
             self.service, self.scheduled_datetime)
 
+    def __unicode__(self):
+        return self.__str__()
+
 
 class AuthenticationToken(models.Model):
     user  = models.ForeignKey(User)
@@ -28,6 +33,9 @@ class AuthenticationToken(models.Model):
 
     def __str__(self):
         return self.user.username
+
+    def __unicode__(self):
+        return self.__str__()
 
 
 def create_user_auth_token(sender, **kwargs):

@@ -22,7 +22,7 @@ def post_to_facebook(post):
     response = requests.post(
         "https://graph.facebook.com/{0}/feed?message={1}"
         "&access_token={2}".format(
-            account.uid, post.status, access_token
+            account.uid, post.status.encode("utf-8"), access_token
         ))
     if response.ok:
         post.is_posted = True
@@ -43,7 +43,7 @@ def post_to_twitter(post):
     except SocialToken.DoesNotExist:
         return None
     twt = Twitter(auth=OAuth(token, token_secret, app.client_id, app.secret))
-    twt.statuses.update(status=post.status)
+    twt.statuses.update(status=post.status.encode("utf-8"))
     post.is_posted = True
     post.save()
 
