@@ -17,6 +17,7 @@ Login
   {% csrf_token %}
   {{ form.as_p }}
   <input type="submit" value="Login" class="pure-button pure-button-primary" >
+  <input type="hidden" name="next" value="{% url "scheduled_posts_list" %}" >
   <p><a href="{% url "password_reset" %}">Forgot Username / Password?</a></p>
 </form>
 {% endblock %}

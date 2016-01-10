@@ -15,6 +15,7 @@ Signup
 <form method="post" action="{% url "account_signup" %}" class="pure-form pure-form-stacked">
   {% csrf_token %}
   {{ form.as_p }}
+  <input type="hidden" name="next" value="{% url "scheduled_posts_list" %}" >
   <input type="submit" value="Signup" class="pure-button pure-button-primary" >
 </form>
 {% endblock %}
