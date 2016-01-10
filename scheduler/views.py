@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, Http404
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.auth import login as django_login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
@@ -31,7 +31,7 @@ def scheduled_posts_add(request):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            dashboard_url = reverse("scheduled_posts_list")
+            dashboard_url = reverse_lazy("scheduled_posts_list")
             return HttpResponseRedirect(dashboard_url)
     return render(request, 'add.html', {
         "form": form
@@ -53,7 +53,7 @@ def scheduled_posts_edit(request, id=None):
             instance = form.save(commit=False)
             instance.user = request.user
             instance.save()
-            dashboard_url = reverse("scheduled_posts_list")
+            dashboard_url = reverse_lazy("scheduled_posts_list")
             return HttpResponseRedirect(dashboard_url)
     return render(request, 'add.html', {
         "form": form
@@ -69,5 +69,5 @@ def scheduled_posts_delete(request, id=None):
     if instance.user != request.user:
         raise Http404
     instance.delete()
-    dashboard_url = reverse("scheduled_posts_list")
+    dashboard_url = reverse_lazy("scheduled_posts_list")
     return HttpResponseRedirect(dashboard_url)
