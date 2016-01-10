@@ -1,5 +1,15 @@
 {% extends "base.html" %}{% load i18n %}
 
+{% block title %}
+{% trans "Add a scheduled post" %}
+{% endblock %}
+
+{% block extra_css %}
+<style type="text/css" media="screen">
+  .info { color: #f00; }
+</style>
+{% endblock %}
+
 {% block content %}
 <p><a href="{% url "scheduled_posts_list" %}">{% trans "View scheduled posts" %}</a></p>
 <form method="post" action="." class="pure-form pure-form-stacked">
@@ -7,4 +17,18 @@
   {{ form.as_p }}
   <input type="submit" value="{% trans "Schedule" %}" class="pure-button pure-button-primary" >
 </form>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+    (function() {
+	var statusBox = document.querySelector("textarea[name=status]");
+	var info = document.createElement("span");
+	info.className = "info";
+	statusBox.parentNode.insertBefore(info, statusBox);
+	statusBox.addEventListener("keyup", function() {
+	    info.innerHTML = statusBox.value.length;
+	});
+    })();
+</script>
 {% endblock %}
