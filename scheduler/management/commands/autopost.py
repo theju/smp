@@ -1,3 +1,5 @@
+import urllib
+import re
 import requests
 
 from django.core.management.base import BaseCommand, CommandError
@@ -19,10 +21,18 @@ def post_to_facebook(post):
         access_token = account.socialtoken_set.get().token
     except SocialToken.DoesNotExist:
         return None
+    message = post.status.encode("utf-8")
+    link = re.findall("https?://[^\s]+", post.status)
+    params = {
+        "message": message,
+        "access_token": access_token
+    }
+    if link:
+        params["link"] = link[0]
     response = requests.post(
-        "https://graph.facebook.com/{0}/feed?message={1}"
-        "&access_token={2}".format(
-            account.uid, post.status.encode("utf-8"), access_token
+        "https://graph.facebook.com/{0}/feed?{1}".format(
+            account.uid,
+            urllib.urlencode(params)
         ))
     if response.ok:
         post.is_posted = True
