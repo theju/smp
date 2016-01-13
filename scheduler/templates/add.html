@@ -29,6 +29,15 @@
 	statusBox.addEventListener("keyup", function() {
 	    info.innerHTML = statusBox.value.length;
 	});
+
+	var dateInput = document.querySelector("#id_scheduled_datetime_0");
+	var timeInput = document.querySelector("#id_scheduled_datetime_1");
+	var tzInput = document.querySelector("#id_scheduled_datetime_2");
+	var tz = moment.tz.guess();
+	var nextDateTime = moment(new Date(dateInput.value + "T" + timeInput.value + "Z"));
+	dateInput.value = nextDateTime.format("YYYY-MM-DD");
+	timeInput.value = nextDateTime.format("HH:mm:ss");
+	tzInput.value = tz;
     })();
 </script>
 {% endblock %}

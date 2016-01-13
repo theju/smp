@@ -26,7 +26,7 @@
   <tr>
     <td>{{ post.status }}</td>
     <td>{{ post.service|capfirst }}</td>
-    <td>{{ post.scheduled_datetime }}</td>
+    <td class="datetime">{{ post.scheduled_datetime|date:"c" }}</td>
     <td>
     <a href="{% url "scheduled_posts_edit" id=post.id %}">{% trans "Edit" %}</a>
       |
@@ -37,7 +37,9 @@
     <tr><td colspan="4">{% blocktrans with add_url=scheduled_posts_add_url %}No scheduled posts in the queue. Please click <a href="{{ add_url }}">here</a> to add one.{% endblocktrans %}</td></tr>
   {% endfor %}
 </table>
+{% endblock %}
 
+{% block extra_js %}
 <script type="text/javascript">
     function deletePost(url) {
 	if (confirm("{% trans "Are you sure you want to delete the post?" %}")) {
@@ -56,6 +58,12 @@
 		apiKeyLink.innerHTML = "{% trans "View API Key" %}";
 	    }
 	});
+
+	var tz = moment.tz.guess();
+	var datetimes = document.querySelectorAll(".datetime");
+	for (var ii=0; ii < datetimes.length; ii++) {
+	    datetimes[ii].innerHTML = moment(new Date(datetimes[ii].innerHTML)).tz(tz).format("YYYY-MM-DD HH:mm A z");
+	}
     })();
 </script>
 {% endblock %}

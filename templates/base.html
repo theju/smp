@@ -19,13 +19,22 @@
 	    <a href="{% url "account_logout" %}">Logout</a>
 	  </p>
 	{% endif %}
-	  <p><strong>{% localtime on %}{{ current_time }} {% get_current_timezone as tz %}{{ tz }}{% endlocaltime %}</strong></p>
+	  <p><strong class="curr_time">{% localtime on %}{{ current_time }} {% get_current_timezone as tz %}{{ tz }}{% endlocaltime %}</strong></p>
 	</div>
 	{% block content %}
 	{% endblock %}
       </div>
       <div class="pure-u-1-5"></div>
     </div>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
+    <script type="text/javascript" src="{% get_static_prefix %}js/moment-timezone-with-data-2010-2020.min.js"></script>
+    <script type="text/javascript">
+      (function() {
+	  var timeHolder = document.querySelector(".curr_time");
+	  var tz = moment.tz.guess();
+	  timeHolder.innerHTML = moment.tz(tz).format("YYYY-MM-DD HH:mm a z");
+      })();
+    </script>
     {% block extra_js %}{% endblock %}
   </body>
 </html>
