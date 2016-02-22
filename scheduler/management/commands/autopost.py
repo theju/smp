@@ -1,4 +1,3 @@
-import urllib
 import re
 import json
 import requests
@@ -33,12 +32,12 @@ def post_to_facebook(post):
             med_file = open(med, "rb")
         except IOError:
             continue
+        params.update({"no_story": True})
         response = requests.post(
-            "https://graph.facebook.com/{0}/photos?{1}".format(
-                account.uid,
-                urllib.urlencode(params)
+            "https://graph.facebook.com/{0}/photos".format(
+                account.uid
             ),
-            data={"no_story": True},
+            data=params,
             files={"source": med_file}
         )
         if response.ok:
@@ -46,6 +45,7 @@ def post_to_facebook(post):
 
     if media:
         params["object_attachment"] = media[0]
+        params.pop("no_story", None)
 
     message = post.status.encode("utf-8")
     params["message"] = message
@@ -54,10 +54,11 @@ def post_to_facebook(post):
         params["link"] = link[0]
 
     response = requests.post(
-        "https://graph.facebook.com/{0}/feed?{1}".format(
-            account.uid,
-            urllib.urlencode(params)
-        ))
+        "https://graph.facebook.com/{0}/feed".format(
+            account.uid
+        ),
+        data=params
+    )
     if response.ok:
         post.is_posted = True
         post.save()
