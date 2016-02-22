@@ -5,3 +5,4 @@ local.py
 db.sqlite3
 static/
 !*/static
+media/

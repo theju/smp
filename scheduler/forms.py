@@ -1,9 +1,12 @@
 import pytz
+import json
+import os
 
 from django import forms
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.exceptions import ValidationError
+from django.conf import settings
 
 from allauth.socialaccount.models import SocialAccount
 
@@ -22,6 +25,7 @@ class ScheduledPostAddForm(forms.ModelForm):
         widget=SplitDateTimeWidget
     )
     scheduled_tz = forms.CharField(widget=forms.HiddenInput)
+    attached_media = forms.ImageField(required=False)
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop("user")
@@ -40,13 +44,22 @@ class ScheduledPostAddForm(forms.ModelForm):
 
     class Meta:
         model = ScheduledPost
-        fields = ("status", "service", "scheduled_datetime")
+        fields = ("status", "service", "scheduled_datetime", "attached_media")
 
     def clean_scheduled_datetime(self):
         scheduled_datetime = self.cleaned_data["scheduled_datetime"]
         if scheduled_datetime < timezone.now():
             raise forms.ValidationError("Time cannot be in the past")
         return scheduled_datetime
+
+    def clean_attached_media(self):
+        media = self.cleaned_data["attached_media"]
+        if media:
+            ff = open(os.path.join(settings.MEDIA_ROOT, media.name), "w")
+            ff.write(media.read())
+            ff.close()
+            return json.dumps([ff.name])
+        return []
 
     def clean(self):
         data = self.cleaned_data

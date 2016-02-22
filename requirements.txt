@@ -2,3 +2,4 @@ django
 django-allauth
 twitter
 pytz
+Pillow

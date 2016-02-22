@@ -50,7 +50,7 @@ def post_add(request, **kwargs):
                             status=400)
     data["scheduled_datetime_0"] = scheduled_datetime.strftime("%Y-%m-%d")
     data["scheduled_datetime_1"] = scheduled_datetime.strftime("%H:%M")
-    form = ScheduledPostAddForm(data, user=request.user)
+    form = ScheduledPostAddForm(data, request.FILES, user=request.user)
     if form.is_valid():
         instance = form.save(commit=False)
         instance.user = request.user

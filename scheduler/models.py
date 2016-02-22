@@ -16,6 +16,7 @@ class ScheduledPost(models.Model):
         ("twitter", _("Twitter")),
     ))
     scheduled_datetime = models.DateTimeField()
+    attached_media = models.TextField(null=True, blank=True, default="[]")
     is_posted = models.BooleanField(default=False)
 
     def __str__(self):

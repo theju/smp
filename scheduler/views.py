@@ -26,7 +26,11 @@ def scheduled_posts_list(request):
 def scheduled_posts_add(request):
     form = ScheduledPostAddForm(user=request.user)
     if request.method == "POST":
-        form = ScheduledPostAddForm(request.POST, user=request.user)
+        form = ScheduledPostAddForm(
+            request.POST,
+            request.FILES,
+            user=request.user
+        )
         if form.is_valid():
             instance = form.save(commit=False)
             instance.user = request.user
@@ -48,7 +52,12 @@ def scheduled_posts_edit(request, id=None):
         raise Http404
     form = ScheduledPostAddForm(user=request.user, instance=instance)
     if request.method == "POST":
-        form = ScheduledPostAddForm(request.POST, user=request.user, instance=instance)
+        form = ScheduledPostAddForm(
+            request.POST,
+            request.FILES,
+            user=request.user,
+            instance=instance
+        )
         if form.is_valid():
             instance = form.save(commit=False)
             instance.user = request.user
