@@ -38,6 +38,7 @@ def post_to_facebook(post):
                 account.uid,
                 urllib.urlencode(params)
             ),
+            data={"no_story": True},
             files={"source": med_file}
         )
         if response.ok:
