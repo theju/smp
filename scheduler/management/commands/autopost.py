@@ -89,8 +89,9 @@ def post_to_twitter(post):
             try:
                 med_file = open(med, "rb")
             except IOError:
-                pass
-            media.append(twt_up.media.upload(media=med_file)["media_id_string"])
+                continue
+            contents = med_file.read()
+            media.append(twt_up.media.upload(media=contents)["media_id_string"])
             med_file.close()
         kwargs["media_ids"] = ",".join(media)
     twt = Twitter(auth=OAuth(token, token_secret, app.client_id, app.secret))
