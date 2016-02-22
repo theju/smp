@@ -120,7 +120,11 @@ ACCOUNT_LOGOUT_ON_GET = True
 SOCIALACCOUNT_PROVIDERS = {
     "facebook": {
         "METHOD": "oauth2",
-        "SCOPE": ['public_profile', 'email', 'publish_actions', 'manage_pages', 'publish_pages'],
+        "SCOPE": [
+            'public_profile', 'email', 'publish_actions',
+            'manage_pages', 'publish_pages',
+            'user_posts', 'user_photos'
+        ],
         "EXCHANGE_TOKEN": True
     }
 }
