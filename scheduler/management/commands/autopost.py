@@ -41,7 +41,7 @@ def post_to_facebook(post):
             files={"source": med_file}
         )
         if response.ok:
-            media.append(response.json().id)
+            media.append(response.json()["id"])
 
     if media:
         params["object_attachment"] = media[0]
