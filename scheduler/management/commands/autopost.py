@@ -25,27 +25,19 @@ def post_to_facebook(post):
     params = {
         "access_token": access_token
     }
-    media_objs = json.loads(post.attached_media)
-    media = []
-    for med in media_objs:
-        try:
-            med_file = open(med, "rb")
-        except IOError:
-            continue
+    if post.attached_media:
         params.update({"no_story": True})
         response = requests.post(
             "https://graph.facebook.com/{0}/photos".format(
                 account.uid
             ),
             data=params,
-            files={"source": med_file}
+            files={"source": post.attached_media}
         )
         if response.ok:
-            media.append(response.json()["id"])
-
-    if media:
-        params["object_attachment"] = media[0]
-        params.pop("no_story", None)
+            photo_id = response.json()["id"]
+            params["object_attachment"] = photo_id
+            params.pop("no_story", None)
 
     message = post.status.encode("utf-8")
     params["message"] = message
@@ -80,21 +72,14 @@ def post_to_twitter(post):
     kwargs = {
         "status": post.status.encode("utf-8"),
     }
-    media_objs = json.loads(post.attached_media)
-    if media_objs:
-        media = []
+    if post.attached_media:
         twt_up = Twitter(
             domain='upload.twitter.com',
             auth=OAuth(token, token_secret, app.client_id, app.secret)
         )
-        for med in media_objs:
-            try:
-                med_file = open(med, "rb")
-            except IOError:
-                continue
-            contents = med_file.read()
-            media.append(twt_up.media.upload(media=contents)["media_id_string"])
-            med_file.close()
+        media = []
+        contents = post.attached_media.read()
+        media.append(twt_up.media.upload(media=contents)["media_id_string"])
         kwargs["media_ids"] = ",".join(media)
     twt = Twitter(auth=OAuth(token, token_secret, app.client_id, app.secret))
     twt.statuses.update(**kwargs)
@@ -112,6 +97,12 @@ class Command(BaseCommand):
                                                  scheduled_datetime__gte=now,
                                                  scheduled_datetime__lt=next_min):
             if post.service == "facebook":
-                post_to_facebook(post)
+                try:
+                    post_to_facebook(post)
+                except Exception:
+                    pass
             elif post.service == "twitter":
-                post_to_twitter(post)
+                try:
+                    post_to_twitter(post)
+                except Exception:
+                    pass

@@ -95,22 +95,22 @@ class APITestCase(TestCase):
         self.assertEqual(response.status_code, 400)
 
         # Valid PNG
-        onepx_png = StringIO.StringIO(
+        onepx_png = (
             "\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00"
             "\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00"
             "\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\rIDAT"
             "\x08\xd7c````\x00\x00\x00\x05\x00\x01^\xf3*"
             ":\x00\x00\x00\x00IEND\xaeB`\x82"
         )
+        onepx_png_file = StringIO.StringIO(onepx_png)
         response = self.client.post("/api/post/add/", {
             "status": "Hello World",
             "service": "facebook",
-            "attached_media": onepx_png,
+            "attached_media": onepx_png_file,
             "scheduled_datetime": self.dt,
             "scheduled_tz": "UTC"            
         }, HTTP_AUTHORIZATION="Basic {0}".format(self.auth_str))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ScheduledPost.objects.count(), 1)
         post = ScheduledPost.objects.get()
-        file_path = [os.path.join(settings.MEDIA_ROOT, "attached_media")]
-        self.assertEqual(json.loads(post.attached_media), file_path)
+        self.assertEqual(post.attached_media.read(), onepx_png)

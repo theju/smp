@@ -52,15 +52,6 @@ class ScheduledPostAddForm(forms.ModelForm):
             raise forms.ValidationError("Time cannot be in the past")
         return scheduled_datetime
 
-    def clean_attached_media(self):
-        media = self.cleaned_data["attached_media"]
-        if media:
-            ff = open(os.path.join(settings.MEDIA_ROOT, media.name), "w")
-            ff.write(media.read())
-            ff.close()
-            return json.dumps([ff.name])
-        return []
-
     def clean(self):
         data = self.cleaned_data
         if data.get("scheduled_datetime"):
