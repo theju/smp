@@ -32,7 +32,9 @@
       (function() {
 	  var timeHolder = document.querySelector(".curr_time");
 	  var tz = moment.tz.guess();
-	  timeHolder.innerHTML = moment.tz(tz).format("YYYY-MM-DD HH:mm a z");
+	  setInterval(function() {
+	      timeHolder.innerHTML = moment.tz(tz).format("YYYY-MM-DD HH:mm a z");
+	  }, 1000);
       })();
     </script>
     {% block extra_js %}{% endblock %}
