@@ -34,7 +34,7 @@
 	  var tz = moment.tz.guess();
 	  setInterval(function() {
 	      timeHolder.innerHTML = moment.tz(tz).format("YYYY-MM-DD HH:mm a z");
-	  }, 1000);
+	  }, 60000);
       })();
     </script>
     {% block extra_js %}{% endblock %}
