@@ -134,6 +134,8 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+MESSAGE_STORAGE = "storage.session.SessionStorage"
+
 LOGIN_REDIRECT_URL = "/posts/list/"
 
 try:

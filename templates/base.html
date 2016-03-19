@@ -21,6 +21,16 @@
 	{% endif %}
 	  <p><strong class="curr_time">{% localtime on %}{{ current_time }} {% get_current_timezone as tz %}{{ tz }}{% endlocaltime %}</strong></p>
 	</div>
+	<ul class="messages">
+	    {% if messages %}
+	    {% for message in messages %}
+	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+		{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+		{{ message }}
+	    </li>
+	    {% endfor %}
+	    {% endif %}
+	</ul>
 	{% block content %}
 	{% endblock %}
       </div>
