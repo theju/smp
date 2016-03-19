@@ -134,7 +134,7 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-MESSAGE_STORAGE = "storage.session.SessionStorage"
+MESSAGE_STORAGE = "django.contrib.messages.storage.session.SessionStorage"
 
 LOGIN_REDIRECT_URL = "/posts/list/"
 
