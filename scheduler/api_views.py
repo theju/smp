@@ -20,7 +20,7 @@ def validate_basic_auth(fn):
         if scheme.lower() != "basic":
             return JsonResponse({"error": "Invalid authentication scheme"}, status=401)
         try:
-            token, _ = str(base64.b64decode(encoded.strip())).split(":")
+            token, _ = base64.b64decode(encoded.encode().strip()).decode().split(":")
         except (TypeError, ValueError):
             return JsonResponse({"error": "Invalid token"}, status=401)
         try:

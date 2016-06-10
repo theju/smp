@@ -24,7 +24,8 @@ class ScheduledPostAddForm(forms.ModelForm):
     scheduled_datetime = forms.SplitDateTimeField(
         widget=SplitDateTimeWidget
     )
-    scheduled_tz = forms.CharField(widget=forms.HiddenInput)
+    scheduled_tz = forms.CharField(widget=forms.HiddenInput,
+                                   initial="UTC", required=False)
     attached_media = forms.ImageField(required=False)
 
     def __init__(self, *args, **kwargs):
@@ -56,7 +57,7 @@ class ScheduledPostAddForm(forms.ModelForm):
         data = self.cleaned_data
         if data.get("scheduled_datetime"):
             sched_dt = data["scheduled_datetime"]
-            tz = pytz.timezone(data.get("scheduled_tz", "UTC"))
+            tz = sched_dt.tzinfo
             sched_dt = tz.localize(sched_dt.replace(tzinfo=None))
             data["scheduled_datetime"] = timezone.localtime(sched_dt)
         return data

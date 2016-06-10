@@ -2,7 +2,10 @@ from datetime import datetime
 import base64
 import json
 import os
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 from django.test import TestCase
 from django.core.files.images import ImageFile
@@ -14,7 +17,7 @@ from .models import ScheduledPost, AuthenticationToken, User
 
 
 class APITestCase(TestCase):
-    dt = datetime(2020, 01, 01, 00, 01, 00).strftime("%Y-%m-%dT%H:%M:%SZ")
+    dt = datetime(2020, 1, 1, 0, 1, 0).strftime("%Y-%m-%dT%H:%M:%SZ")
 
     def setUp(self):
         uu = User.objects.create(username="example", email="foo@example.com")
@@ -25,22 +28,20 @@ class APITestCase(TestCase):
         SocialAccount.objects.create(user=uu, provider="facebook", uid="abc")
 
         token = AuthenticationToken.objects.get(user=uu).token
-        self.auth_str = str(base64.b64encode("{0}:".format(token)))
+        self.auth_str = base64.b64encode(token.encode() + b":").decode()
 
     def testInvalidAuth(self):
-        auth_str = str(base64.b64encode("123:"))
+        auth_str = base64.b64encode(b"123:").decode()
         response = self.client.post("/api/post/add/", {
             "status": "Hello World",
             "service": "facebook",
             "scheduled_datetime": self.dt,
-            "scheduled_tz": "UTC"
         })
         self.assertEqual(response.status_code, 401)
         response = self.client.post("/api/post/add/", {
             "status": "Hello World",
             "service": "facebook",
             "scheduled_datetime": self.dt,
-            "scheduled_tz": "UTC"            
         }, HTTP_AUTHORIZATION="Fancy {0}".format(auth_str))
         self.assertEqual(response.status_code, 401)
         response = self.client.post("/api/post/add/", {
@@ -53,7 +54,6 @@ class APITestCase(TestCase):
             "status": "Hello World",
             "service": "facebook",
             "scheduled_datetime": self.dt,
-            "scheduled_tz": "UTC"            
         }, HTTP_AUTHORIZATION="Basic x{0}".format(auth_str))
         self.assertEqual(response.status_code, 401)
 
@@ -62,7 +62,6 @@ class APITestCase(TestCase):
             "status": "Hello World",
             "service": "twitter",
             "scheduled_datetime": self.dt,
-            "scheduled_tz": "UTC"            
         }, HTTP_AUTHORIZATION="Basic {0}".format(self.auth_str))
         self.assertEqual(response.status_code, 400)
 
@@ -71,14 +70,13 @@ class APITestCase(TestCase):
             "status": "Hello World",
             "service": "facebook",
             "scheduled_datetime": self.dt,
-            "scheduled_tz": "UTC"            
         }, HTTP_AUTHORIZATION="Basic {0}".format(self.auth_str))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ScheduledPost.objects.count(), 1)
 
     def testPostAddWithMedia(self):
         # Invalid PNG
-        onepx_png = StringIO.StringIO(
+        onepx_png = StringIO(
             "\x89PAG\r\n\x1a\n\x00\x00\x00\rIHDR\x00"
             "\x00\x00\x01\x00\x00\x00\x01\x08\x06\x00"
             "\x00\x00\x1f\x15\xc4\x89\x00\x00\x00\rIDAT"
@@ -90,7 +88,6 @@ class APITestCase(TestCase):
             "service": "facebook",
             "attached_media": onepx_png,
             "scheduled_datetime": self.dt,
-            "scheduled_tz": "UTC"            
         }, HTTP_AUTHORIZATION="Basic {0}".format(self.auth_str))
         self.assertEqual(response.status_code, 400)
 
@@ -102,13 +99,12 @@ class APITestCase(TestCase):
             "\x08\xd7c````\x00\x00\x00\x05\x00\x01^\xf3*"
             ":\x00\x00\x00\x00IEND\xaeB`\x82"
         )
-        onepx_png_file = StringIO.StringIO(onepx_png)
+        onepx_png_file = StringIO(onepx_png)
         response = self.client.post("/api/post/add/", {
             "status": "Hello World",
             "service": "facebook",
             "attached_media": onepx_png_file,
             "scheduled_datetime": self.dt,
-            "scheduled_tz": "UTC"            
         }, HTTP_AUTHORIZATION="Basic {0}".format(self.auth_str))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ScheduledPost.objects.count(), 1)
