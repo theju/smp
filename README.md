@@ -57,6 +57,7 @@ interface or an API. Currently supports Facebook and Twitter.
   requests.post("http://localhost:8000/api/post/add/", data={
       "status": "Hello World",
       "service": "facebook",
-	  "scheduled_datetime": datetime.datetime(2016, 01, 01, 00, 01, 00).strftime("%Y-%m-%dT%H:%M:%SZ")
+      "scheduled_datetime": datetime.datetime(2016, 01, 01, 00, 01, 00).strftime("%Y-%m-%dT%H:%M:%SZ"),
+      "scheduled_tz": "UTC"
   }, auth=("<api_key>", ""))
   ```
