@@ -45,7 +45,7 @@ class ScheduledPostAddForm(forms.ModelForm):
 
     class Meta:
         model = ScheduledPost
-        fields = ("status", "service", "scheduled_datetime", "attached_media")
+        fields = ("scheduled_datetime", "service", "status", "attached_media")
 
     def clean_scheduled_datetime(self):
         scheduled_datetime = self.cleaned_data["scheduled_datetime"]
