@@ -57,7 +57,7 @@ class ScheduledPostAddForm(forms.ModelForm):
         data = self.cleaned_data
         if data.get("scheduled_datetime"):
             sched_dt = data["scheduled_datetime"]
-            tz = sched_dt.tzinfo
-            sched_dt = tz.localize(sched_dt.replace(tzinfo=None))
+            sched_tz = timezone.pytz.timezone(data.get("scheduled_tz"))
+            sched_dt = sched_tz.localize(sched_dt.replace(tzinfo=None))
             data["scheduled_datetime"] = timezone.localtime(sched_dt)
         return data
