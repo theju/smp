@@ -28,9 +28,11 @@
     <td>{{ post.service|capfirst }}</td>
     <td class="datetime">{{ post.scheduled_datetime|date:"c" }}</td>
     <td>
-    <a href="{% url "scheduled_posts_edit" id=post.id %}">{% trans "Edit" %}</a>
+      <a href="{% url "scheduled_posts_copy" id=post.id %}">{% trans "Copy" %}</a>
       |
-    <a href="javascript:deletePost('{% url "scheduled_posts_delete" id=post.id %}');">{% trans "Delete" %}</a>
+      <a href="{% url "scheduled_posts_edit" id=post.id %}">{% trans "Edit" %}</a>
+      |
+      <a href="javascript:deletePost('{% url "scheduled_posts_delete" id=post.id %}');">{% trans "Delete" %}</a>
     </td>
   </tr>
     {% empty %}{% url scheduled_posts_add as scheduled_posts_add_url %}
