@@ -32,7 +32,7 @@ def post_to_facebook(post):
                 account.uid
             ),
             data=params,
-            files={"source": post.attached_media}
+            files={"source": post.attached_media.file}
         )
         if response.ok:
             photo_id = response.json()["id"]
