@@ -27,6 +27,7 @@ def post_to_facebook(post):
     }
     if post.attached_media:
         params.update({"no_story": True})
+        post.attached_media.file.seek(0)
         response = requests.post(
             "https://graph.facebook.com/{0}/photos".format(
                 account.uid
