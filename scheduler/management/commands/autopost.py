@@ -11,6 +11,8 @@ from twitter import Twitter, OAuth
 from scheduler.models import ScheduledPost
 
 
+GRAPH_API_BASE_URL = "https://graph.facebook.com"
+
 def post_to_facebook(post):
     try:
         account = SocialAccount.objects.get(user=post.user,
@@ -29,16 +31,19 @@ def post_to_facebook(post):
         params.update({"no_story": True})
         post.attached_media.file.seek(0)
         response = requests.post(
-            "https://graph.facebook.com/{0}/photos".format(
-                account.uid
-            ),
+            "{0}/{1}/photos".format(GRAPH_API_BASE_URL, account.uid),
             data=params,
             files={"source": post.attached_media.file}
         )
         if response.ok:
             photo_id = response.json()["id"]
-            params["object_attachment"] = photo_id
-            params.pop("no_story", None)
+            pic_resp = requests.get(
+                "{0}/{1}".format(GRAPH_API_BASE_URL, photo_id),
+                params={"fields": "picture"}
+            )
+            if pic_resp.ok:
+                params["picture"] = pic_resp.json()["picture"]
+                params.pop("no_story", None)
 
     message = post.status.encode("utf-8")
     params["message"] = message
@@ -47,9 +52,7 @@ def post_to_facebook(post):
         params["link"] = link[0]
 
     response = requests.post(
-        "https://graph.facebook.com/{0}/feed".format(
-            account.uid
-        ),
+        "{0}/{1}/feed".format(GRAPH_API_BASE_URL, account.uid),
         data=params
     )
     if response.ok:
