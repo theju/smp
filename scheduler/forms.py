@@ -1,6 +1,7 @@
 import pytz
 import json
 import os
+import mimetypes
 import requests
 import tempfile
 
@@ -75,7 +76,8 @@ class ScheduledPostAddForm(forms.ModelForm):
             if not response.ok:
                 raise forms.ValidationError(_("An error occurred while "
                                               "downloading the media from the URL"))
-            ff = tempfile.NamedTemporaryFile()
+            ext = mimetypes.guess_extension(response.headers['content-type'])
+            ff = tempfile.NamedTemporaryFile(suffix=ext)
             ff.write(response.content)
             img_file = ImageFile(ff, name=ff.name)
             height, width = get_image_dimensions(img_file)
