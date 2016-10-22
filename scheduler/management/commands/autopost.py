@@ -3,6 +3,7 @@ import json
 import requests
 
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.sites.models import Site
 from django.utils import timezone
 
 from allauth.socialaccount.models import SocialApp, SocialAccount, SocialToken
@@ -28,22 +29,11 @@ def post_to_facebook(post):
         "access_token": access_token
     }
     if post.attached_media:
-        params.update({"no_story": True})
-        post.attached_media.file.seek(0)
-        response = requests.post(
-            "{0}/{1}/photos".format(GRAPH_API_BASE_URL, account.uid),
-            data=params,
-            files={"source": post.attached_media.file}
+        site = Site.objects.get_current()
+        params["picture"] = "https://{0}{1}".format(
+            site.domain,
+            post.attached_media.url
         )
-        if response.ok:
-            photo_id = response.json()["id"]
-            pic_resp = requests.get(
-                "{0}/{1}".format(GRAPH_API_BASE_URL, photo_id),
-                params={"fields": "picture"}
-            )
-            if pic_resp.ok:
-                params["picture"] = pic_resp.json()["picture"]
-                params.pop("no_story", None)
 
     message = post.status.encode("utf-8")
     params["message"] = message
