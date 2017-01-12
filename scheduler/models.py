@@ -14,6 +14,7 @@ class ScheduledPost(models.Model):
     service = models.CharField(max_length=20, choices=(
         ("facebook", _("Facebook")),
         ("twitter", _("Twitter")),
+        ("linkedin_oauth2", _("LinkedIn")),
     ))
     scheduled_datetime = models.DateTimeField()
     attached_media = models.ImageField(upload_to='uploads/%Y%m%d',

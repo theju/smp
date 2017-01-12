@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
 from scheduler.models import ScheduledPost
-from scheduler.utils import post_to_facebook, post_to_twitter
+from scheduler.utils import post_to_facebook, post_to_twitter, post_to_linkedin
 
 
 class Command(BaseCommand):
@@ -25,5 +25,10 @@ class Command(BaseCommand):
             elif post.service == "twitter":
                 try:
                     post_to_twitter(post)
+                except Exception:
+                    pass
+            elif post.service == "linkedin_oauth2":
+                try:
+                    post_to_linkedin(post)
                 except Exception:
                     pass

@@ -5,19 +5,22 @@ Login
 {% endblock %}
 
 {% block content %}
-<h2>Login | <a href="{% url "account_signup" %}">Signup</a></h2>
-<div>
-  <p>
-    <a href="{% provider_login_url "facebook" method="oauth2" process="login" %}"><i class="fa fa-facebook-square"></i></a>
-    <a href="{% provider_login_url "twitter" process="login" %}"><i class="fa fa-twitter-square"></i></a>
-  </p>
+<div class="pure-g">
+  <div class="pure-u-1">
+    <h2>Login | <a href="{% url "account_signup" %}">Signup</a></h2>
+    <p>
+      <a href="{% provider_login_url "facebook" method="oauth2" process="login" %}"><i class="fa fa-facebook-square fa-4x"></i></a>
+      <a href="{% provider_login_url "twitter" process="login" %}"><i class="fa fa-twitter-square fa-4x"></i></a>
+      <a href="{% provider_login_url "linkedin_oauth2" process="login" %}"><i class="fa fa-linkedin-square fa-4x"></i></a>
+    </p>
+    <h3>OR</h3>
+    <form method="post" action="{% url "account_login" %}" class="pure-form pure-form-stacked">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Login" class="pure-button pure-button-primary" >
+      <input type="hidden" name="next" value="{% url "scheduled_posts_list" %}" >
+      <p><a href="{% url "password_reset" %}">Forgot Username / Password?</a></p>
+    </form>
+  </div>
 </div>
-<h3>OR</h3>
-<form method="post" action="{% url "account_login" %}" class="pure-form pure-form-stacked">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="Login" class="pure-button pure-button-primary" >
-  <input type="hidden" name="next" value="{% url "scheduled_posts_list" %}" >
-  <p><a href="{% url "password_reset" %}">Forgot Username / Password?</a></p>
-</form>
 {% endblock %}

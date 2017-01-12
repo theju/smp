@@ -76,3 +76,38 @@ def post_to_twitter(post):
     twt.statuses.update(**kwargs)
     post.is_posted = True
     post.save()
+
+
+def post_to_linkedin(post):
+    try:
+        account = SocialAccount.objects.get(user=post.user,
+                                            provider=post.service)
+    except SocialAccount.DoesNotExist:
+        return None
+    try:
+        access_token = account.socialtoken_set.get().token
+    except SocialToken.DoesNotExist:
+        return None
+
+    headers = {
+        "Content-Type": "application/json",
+        "x-li-format": "json",
+        "Authorization": "Bearer {0}".format(access_token)
+    }
+    link = re.findall("https?://[^\s]+", post.status)
+    post_params = {
+        "content": {
+            "title": post.status.encode("utf-8"),
+            "submitted-url": link or None
+        },
+        "visibility": {
+            "code": "anyone"
+        }
+    }
+    try:
+        requests.post("https://api.linkedin.com/v1/people/"
+                      "~/shares?format=json",
+                      headers=heders,
+                      data=post_params)
+    except requests.exceptions.RequestException:
+        pass
