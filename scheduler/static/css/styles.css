@@ -1,17 +1,31 @@
 .pure-g {
     padding: 10px;
 }
-table {
-    width: 100%;
+.row {
+    margin-bottom: 10px;
 }
-th {
-    font-weight: bold;
-    text-align: left;
+.header {
+    background-color: #cbcbcb;
 }
-td {
+.header h4 {
+    margin: 10px 0;
+}
+.post {
     padding: 10px 0;
 }
-tr:nth-child(even) {
-    background-color: #ccc;
-    padding: 10px;
+.post:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+.post p {
+    margin: 5px 0;
+}
+.button-error {
+    background: rgb(202, 60, 60);
+    color: #fff;
+}
+
+@media (max-width: 1024px) {
+    .pure-u-1.header {
+        display: none;
+    }
 }

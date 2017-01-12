@@ -5,49 +5,65 @@
 {% endblock %}
 
 {% block content %}
-<div class="pure-g">
-  <div class="pure-u-1">
-    <a href="{% provider_login_url "facebook" method="oauth2" process="connect" %}"><i class="fa fa-facebook-square"></i></a>
-    <a href="{% provider_login_url "twitter" process="connect" %}"><i class="fa fa-twitter-square"></i></a>
-    <a href="{% provider_login_url "linkedin_oauth2" process="connect" %}"><i class="fa fa-linkedin-square"></i></a>
+<div class="pure-u-1">
+  <div class="pure-u-1 row">
+    <a href="{% provider_login_url "facebook" method="oauth2" process="connect" %}"><i class="fa fa-facebook-square fa-2x"></i></a>
+    <a href="{% provider_login_url "twitter" process="connect" %}"><i class="fa fa-twitter-square fa-2x"></i></a>
+    <a href="{% provider_login_url "linkedin_oauth2" process="connect" %}"><i class="fa fa-linkedin-square fa-2x"></i></a>
   </div>
 </div>
-<div class="pure-g">
+<div class="pure-u-1 row">
   <div class="pure-u-1">
-    <a href="{% url "scheduled_posts_add" %}">{% trans "Schedule a post" %}</a> | <a href="javascript:void(0);" class="api_key">{% trans "View API Key" %}</a>
+    <a href="{% url "scheduled_posts_add" %}">{% trans "Schedule a post" %}</a>
+    |
+    <a href="javascript:void(0);" class="api_key">{% trans "View API Key" %}</a>
   </div>
 </div>
-<div class="pure-g">
-  <div class="pure-u-1">
+<div class="pure-u-1">
+  <div class="pure-u-1 posts">
     <p class="hidden api_key_holder"><strong>API Key:</strong> {{ api_keys.all.0.token }}</p>
-    <table>
-      {% for post in posts %}
-      {% if forloop.first %}
-      <tr>
-        <th>{% trans "Status" %}</th>
-        <th>{% trans "Service" %}</th>
-        <th>{% trans "Scheduled Time" %}</th>
-        <th>{% trans "Action" %}</th>
-      </tr>
-      {% endif %}
-      <tr>
-        <td>{{ post.status }}</td>
-        <td>{{ post.service|capfirst }}</td>
-        <td class="datetime">{{ post.scheduled_datetime|date:"c" }}</td>
-        <td>
+    {% for post in posts %}
+    <div class="pure-u-1 post">
+      <div class="pure-u-1 header">
+        {% if forloop.first %}
+        <div class="pure-u-1 pure-u-lg-12-24"><h4>{% trans "Status" %}</h4></div>
+        <div class="pure-u-1 pure-u-lg-2-24"><h4>{% trans "Service" %}</h4></div>
+        <div class="pure-u-1 pure-u-lg-5-24"><h4>{% trans "Scheduled Time" %}</h4></div>
+        <div class="pure-u-1 pure-u-lg-4-24"><h4>{% trans "Action" %}</h4></div>
+        {% endif %}
+      </div>
+      <div class="pure-u-1">
+        <div class="pure-u-1 pure-u-lg-12-24">
+          <p>{{ post.status }}</p>
+          {% with extra=post.get_extra %}
+          {% if extra %}
+          <p class="button-error">{{ extra.error }}</p>
+          {% endif %}
+          {% endwith %}
+        </div>
+        <div class="pure-u-1 pure-u-lg-2-24">
+          <p>{{ post.service|capfirst }}</p>
+        </div>
+        <div class="pure-u-1 pure-u-lg-5-24 datetime">
+          <p>{{ post.scheduled_datetime|date:"c" }}</p>
+        </div>
+        <div class="pure-u-1 pure-u-lg-4-24">
+          <p>
           <a href="{% url "scheduled_posts_copy" id=post.id %}">{% trans "Copy" %}</a>
         |
           <a href="{% url "scheduled_posts_edit" id=post.id %}">{% trans "Edit" %}</a>
         |
           <a href="javascript:deletePost('{% url "scheduled_posts_delete" id=post.id %}');">{% trans "Delete" %}</a>
-        </td>
-      </tr>
-      {% empty %}{% url scheduled_posts_add as scheduled_posts_add_url %}
-      <tr>
-        <td colspan="4">{% blocktrans with add_url=scheduled_posts_add_url %}No scheduled posts in the queue. Please click <a href="{{ add_url }}">here</a> to add one.{% endblocktrans %}</td>
-      </tr>
-      {% endfor %}
-    </table>
+          </p>
+        </div>
+      </div>
+    </div>
+    {% empty %}
+    {% url scheduled_posts_add as scheduled_posts_add_url %}
+    <div class="pure-u-1">
+      <h4>{% blocktrans with add_url=scheduled_posts_add_url %}No scheduled posts in the queue. Please click <a href="{{ add_url }}">here</a> to add one.{% endblocktrans %}</h4>
+    </div>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}
@@ -73,7 +89,7 @@
 	});
 
 	var tz = moment.tz.guess();
-	var datetimes = document.querySelectorAll(".datetime");
+	var datetimes = document.querySelectorAll(".datetime p");
 	for (var ii=0; ii < datetimes.length; ii++) {
 	    datetimes[ii].innerHTML = moment(new Date(datetimes[ii].innerHTML)).tz(tz).format("YYYY-MM-DD HH:mm A z");
 	}

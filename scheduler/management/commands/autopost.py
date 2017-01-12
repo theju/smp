@@ -1,3 +1,5 @@
+import json
+
 from django.core.management.base import BaseCommand, CommandError
 from django.utils import timezone
 
@@ -16,19 +18,17 @@ class Command(BaseCommand):
             scheduled_datetime__gte=now,
             scheduled_datetime__lt=next_min
         )
+        services = {
+            "facebook": post_to_facebook,
+            "twitter": post_to_twitter,
+            "linkedin_oauth2": post_to_linkedin,
+        }
         for post in scheduled_posts:
-            if post.service == "facebook":
-                try:
-                    post_to_facebook(post)
-                except Exception:
-                    pass
-            elif post.service == "twitter":
-                try:
-                    post_to_twitter(post)
-                except Exception:
-                    pass
-            elif post.service == "linkedin_oauth2":
-                try:
-                    post_to_linkedin(post)
-                except Exception:
-                    pass
+            post_to_service = services.get(post.service)
+            try:
+                post_to_service(post)
+            except Exception as ex:
+                post.extra = json.dumps({
+                    "error": str(ex)
+                })
+                post.save()

@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 
 import uuid
+import json
 
 from django.db import models
 from django.contrib.auth.models import User
@@ -20,6 +21,9 @@ class ScheduledPost(models.Model):
     attached_media = models.ImageField(upload_to='uploads/%Y%m%d',
                                        null=True, blank=True)
     is_posted = models.BooleanField(default=False)
+    # The below field will hold extra data as a JSON object
+    # At this moment, it holds the error from the failed posting
+    extra = models.TextField(default="{}")
 
     def __str__(self):
         return "{0}: {1}... to {2} at {3}".format(
@@ -28,6 +32,9 @@ class ScheduledPost(models.Model):
 
     def __unicode__(self):
         return self.__str__()
+
+    def get_extra(self):
+        return json.loads(self.extra)
 
 
 class AuthenticationToken(models.Model):

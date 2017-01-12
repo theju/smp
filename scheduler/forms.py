@@ -30,6 +30,9 @@ class ScheduledPostAddForm(forms.ModelForm):
     )
     scheduled_tz = forms.CharField(widget=forms.HiddenInput,
                                    initial="UTC", required=False)
+    status = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": None, "cols": None})
+    )
     attached_media = forms.ImageField(required=False)
     media_url = forms.URLField(required=False)
 
