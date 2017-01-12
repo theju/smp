@@ -5,40 +5,50 @@
 {% endblock %}
 
 {% block content %}
-<div>
-  <p>
+<div class="pure-g">
+  <div class="pure-u-1">
     <a href="{% provider_login_url "facebook" method="oauth2" process="connect" %}"><i class="fa fa-facebook-square"></i></a>
     <a href="{% provider_login_url "twitter" process="connect" %}"><i class="fa fa-twitter-square"></i></a>
-  </p>
+  </div>
 </div>
-<p><a href="{% url "scheduled_posts_add" %}">{% trans "Schedule a post" %}</a> | <a href="javascript:void(0);" class="api_key">{% trans "View API Key" %}</a></p>
-<p class="hidden api_key_holder"><strong>API Key:</strong> {{ api_keys.all.0.token }}</p>
-<table>
-  {% for post in posts %}
-  {% if forloop.first %}
-  <tr>
-    <th>{% trans "Status" %}</th>
-    <th>{% trans "Service" %}</th>
-    <th>{% trans "Scheduled Time" %}</th>
-    <th>{% trans "Action" %}</th>
-  </tr>
-  {% endif %}
-  <tr>
-    <td>{{ post.status }}</td>
-    <td>{{ post.service|capfirst }}</td>
-    <td class="datetime">{{ post.scheduled_datetime|date:"c" }}</td>
-    <td>
-      <a href="{% url "scheduled_posts_copy" id=post.id %}">{% trans "Copy" %}</a>
-      |
-      <a href="{% url "scheduled_posts_edit" id=post.id %}">{% trans "Edit" %}</a>
-      |
-      <a href="javascript:deletePost('{% url "scheduled_posts_delete" id=post.id %}');">{% trans "Delete" %}</a>
-    </td>
-  </tr>
-    {% empty %}{% url scheduled_posts_add as scheduled_posts_add_url %}
-    <tr><td colspan="4">{% blocktrans with add_url=scheduled_posts_add_url %}No scheduled posts in the queue. Please click <a href="{{ add_url }}">here</a> to add one.{% endblocktrans %}</td></tr>
-  {% endfor %}
-</table>
+<div class="pure-g">
+  <div class="pure-u-1">
+    <a href="{% url "scheduled_posts_add" %}">{% trans "Schedule a post" %}</a> | <a href="javascript:void(0);" class="api_key">{% trans "View API Key" %}</a>
+  </div>
+</div>
+<div class="pure-g">
+  <div class="pure-u-1">
+    <p class="hidden api_key_holder"><strong>API Key:</strong> {{ api_keys.all.0.token }}</p>
+    <table>
+      {% for post in posts %}
+      {% if forloop.first %}
+      <tr>
+        <th>{% trans "Status" %}</th>
+        <th>{% trans "Service" %}</th>
+        <th>{% trans "Scheduled Time" %}</th>
+        <th>{% trans "Action" %}</th>
+      </tr>
+      {% endif %}
+      <tr>
+        <td>{{ post.status }}</td>
+        <td>{{ post.service|capfirst }}</td>
+        <td class="datetime">{{ post.scheduled_datetime|date:"c" }}</td>
+        <td>
+          <a href="{% url "scheduled_posts_copy" id=post.id %}">{% trans "Copy" %}</a>
+        |
+          <a href="{% url "scheduled_posts_edit" id=post.id %}">{% trans "Edit" %}</a>
+        |
+          <a href="javascript:deletePost('{% url "scheduled_posts_delete" id=post.id %}');">{% trans "Delete" %}</a>
+        </td>
+      </tr>
+      {% empty %}{% url scheduled_posts_add as scheduled_posts_add_url %}
+      <tr>
+        <td colspan="4">{% blocktrans with add_url=scheduled_posts_add_url %}No scheduled posts in the queue. Please click <a href="{{ add_url }}">here</a> to add one.{% endblocktrans %}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

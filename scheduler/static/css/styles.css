@@ -1,8 +1,5 @@
-.connect {
-    float: right;
-}
-.connect i {
-    font-size: 1.5em;
+.pure-g {
+    padding: 10px;
 }
 table {
     width: 100%;

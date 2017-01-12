@@ -3,49 +3,52 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.0/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/pure-min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pure/0.6.2/grids-responsive-min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{% get_static_prefix %}css/styles.css" type="text/css" media="screen" />
     {% block extra_css %}{% endblock %}
   </head>
   <body>
     <div class="pure-g">
-      <div class="pure-u-1-5"></div>
-      <div class="pure-u-3-5">
-	<div class="connect">
-	  {% if request.user.is_authenticated %}
-	  <p>
-	    <a href="/">Home</a> | 
-	    <a href="{% url "account_logout" %}">Logout</a>
-	  </p>
-	{% endif %}
-	  <p><strong class="curr_time">{% localtime on %}{{ current_time }} {% get_current_timezone as tz %}{{ tz }}{% endlocaltime %}</strong></p>
-	</div>
-	<ul class="messages">
-	    {% if messages %}
-	    {% for message in messages %}
-	    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-		{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
-		{{ message }}
-	    </li>
-	    {% endfor %}
-	    {% endif %}
-	</ul>
-	{% block content %}
-	{% endblock %}
+      <div class="pure-u-1 pure-u-lg-1-5"></div>
+      <div class="pure-u-1 pure-u-lg-3-5">
+        <div class="pure-g">
+          {% if request.user.is_authenticated %}
+          <div class="pure-u-1 pure-u-lg-1-2">
+            <a href="/">Home</a> | <a href="{% url "account_logout" %}">Logout</a>
+	        </div>
+	        {% endif %}
+	        <div class="pure-u-1 pure-u-lg-1-2">
+            <strong class="curr_time">{% localtime on %}{{ current_time }} {% get_current_timezone as tz %}{{ tz }}{% endlocaltime %}</strong>
+          </div>
+        </div>
+        {% if messages %}
+        <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+          {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Important: {% endif %}
+		      {{ message }}
+	        </li>
+	        {% endfor %}
+	      </ul>
+	      {% endif %}
+
+	      {% block content %}
+        {% endblock %}
       </div>
-      <div class="pure-u-1-5"></div>
+      <div class="pure-u-1 pure-u-lg-1-5"></div>
     </div>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment.min.js"></script>
     <script type="text/javascript" src="{% get_static_prefix %}js/moment-timezone-with-data-2010-2020.min.js"></script>
     <script type="text/javascript">
       (function() {
-	  var timeHolder = document.querySelector(".curr_time");
-	  var tz = moment.tz.guess();
+	        var timeHolder = document.querySelector(".curr_time");
+	        var tz = moment.tz.guess();
           timeHolder.innerHTML = moment.tz(tz).format("YYYY-MM-DD HH:mm a z");
-	  setInterval(function() {
-	      timeHolder.innerHTML = moment.tz(tz).format("YYYY-MM-DD HH:mm a z");
-	  }, 60000);
+	        setInterval(function() {
+	            timeHolder.innerHTML = moment.tz(tz).format("YYYY-MM-DD HH:mm a z");
+	        }, 60000);
       })();
     </script>
     {% block extra_js %}{% endblock %}

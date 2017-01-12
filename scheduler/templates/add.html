@@ -11,12 +11,18 @@
 {% endblock %}
 
 {% block content %}
-<p><a href="{% url "scheduled_posts_list" %}">{% trans "View scheduled posts" %}</a></p>
-<form method="post" action="." class="pure-form pure-form-stacked" enctype="multipart/form-data">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <input type="submit" value="{% trans "Schedule" %}" class="pure-button pure-button-primary" >
-</form>
+<div class="pure-g">
+  <div class="pure-u-1">
+    <a href="{% url "scheduled_posts_list" %}">{% trans "View scheduled posts" %}</a>
+  </div>
+  <div class="pure-u-1">
+    <form method="post" action="." class="pure-form pure-form-stacked" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="{% trans "Schedule" %}" class="pure-button pure-button-primary" >
+    </form>
+  </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
